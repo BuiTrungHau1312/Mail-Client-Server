@@ -5,7 +5,8 @@ import java.util.List;
 public class Mail {
     private static final int UNREAD = 0;
     private static final int READ = 1;
-
+    private static final int SPAM = 2;
+    private static final int TRAP = 3;
 
     private int id;
     private String message;
@@ -51,5 +52,15 @@ public class Mail {
 
     public void setAccountId(int accountId) {
         this.accountId = accountId;
+    }
+
+    public Mail(int id, String message, int status, int accountId) {
+        this.id = id;
+        this.message = message;
+        this.status = status;
+        this.accountId = accountId;
+    }
+
+    public Mail() {
     }
 }

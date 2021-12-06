@@ -3,6 +3,18 @@ package DTO;
 import java.util.List;
 
 public class Account {
+    private int id;
+    private String username;
+    private String password;
+    private List<Mail> mailList;
+
+    public Account() { }
+
+    public Account(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
+
     public int getId() {
         return id;
     }
@@ -37,9 +49,5 @@ public class Account {
         this.mailList = mailList;
     }
 
-    private int id;
-    private String username;
-    private String password;
-    private List<Mail> mailList;
 
 }

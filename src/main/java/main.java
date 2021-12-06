@@ -20,7 +20,7 @@ public class main {
                 while (true){
                     Socket socket = serverSocket.accept();
                     System.out.println(socket.toString()+" connected!");
-                    executorService.execute(new ChildThreadServer(socket));//Nếu có cl kết nối thì tạo 1 luồng chạy sv
+                    executorService.execute(new ChildThreadServer(socket));//Nếu có client kết nối thì tạo 1 luồng chạy sv
                 }
             } catch (IOException e) {
                 e.printStackTrace();
