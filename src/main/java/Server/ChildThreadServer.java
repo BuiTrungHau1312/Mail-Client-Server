@@ -1,6 +1,6 @@
 package Server;
 
-import DAL.AuthDAL;
+import Controller.UserController;
 import DTO.Account;
 import org.json.JSONObject;
 
@@ -11,6 +11,9 @@ public class ChildThreadServer implements Runnable {
     private final Socket socket;
     private BufferedWriter bufferedWriter;
     private BufferedReader bufferedReader;
+    private boolean isLogin = false;
+    private Account account;
+
 
     public ChildThreadServer(Socket socket) {
         this.socket = socket;
@@ -35,46 +38,29 @@ public class ChildThreadServer implements Runnable {
 
     @Override
     public void run() {
-        while (true){
-            try {
-                String data = bufferedReader.readLine();
-                System.out.println(data);
-
-                JSONObject res = new JSONObject(data);
-
-//                switch (res.getString()) {
-//
-//                }
-                String type = res.getString("type");
-                switch (type) {
-                    case "LOGIN":
-                        JSONObject dataReceive = res.getJSONObject("data");
-                        String username = dataReceive.getString("username");
-                        String password = dataReceive.getString("password");
-                        System.out.println(username + password);
-                        AuthDAL auth = new AuthDAL();
-                        Account account = auth.checkLogin(username, password);
-                        if (account == null) {
-                            sendDataToClient("tài khoản kh có trong Database");
-                        } else {
-                            sendDataToClient("tài khoản đã có trong Database");
-                        }
-                        break;
-                    case "REGISTER":
-                        sendDataToClient("register");
-                        break;
-                    default:
-                        throw new IllegalStateException("Unexpected value: " + type);
-                }
-
-                System.out.println("RES: " + res.getString("type"));
-
-                sendDataToClient("Server receive: "+data);
-            } catch (IOException e) {
-                e.printStackTrace();
-                closeConnection();
-                break;
+        while (true) {
+            JSONObject rq = getRes();
+            switch (rq.getString("type")){
+                case "LOGIN":
+                    account = new UserController().DoLogin(rq.getString("username"),rq.getString("password"));
+                    if (account == null){
+                        sendDataToClient(new JSONObject().put("type", "LOGIN").put("status", "ERROR").put("message", "khong tim thay tai khoan").toString());
+                    } else {
+                        sendDataToClient(new JSONObject().put("type", "LOGIN").put("status", "SUCCESS").put("data", account.toString()).toString());
+                        account = null;
+                    }
+                    break;
             }
+        }
+    }
+
+    private JSONObject getRes() {
+        try {
+            String data = bufferedReader.readLine();
+            return new JSONObject(data);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new JSONObject().put("type", "ERROR").put("messsage", e.getMessage());
         }
     }
 

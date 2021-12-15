@@ -1,5 +1,7 @@
 package DTO;
 
+import org.json.JSONObject;
+
 import java.util.List;
 
 public class Account {
@@ -49,5 +51,8 @@ public class Account {
         this.mailList = mailList;
     }
 
-
+    @Override
+    public String toString() {
+        return new JSONObject(this).toString();
+    }
 }
