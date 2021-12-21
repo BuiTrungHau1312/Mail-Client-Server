@@ -6,6 +6,7 @@ import org.json.JSONObject;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.HashMap;
 
 public class ChildThreadServer implements Runnable {
     private final Socket socket;
@@ -13,7 +14,7 @@ public class ChildThreadServer implements Runnable {
     private BufferedReader bufferedReader;
     private boolean isLogin = false;
     private Account account;
-
+    public static HashMap<String, Object> listMessage = new HashMap<String, Object>();
 
     public ChildThreadServer(Socket socket) {
         this.socket = socket;
@@ -40,6 +41,7 @@ public class ChildThreadServer implements Runnable {
     public void run() {
         while (true) {
             JSONObject rq = getRes();
+            System.out.println(rq);
             switch (rq.getString("type")){
                 case "LOGIN":
                     account = new UserController().DoLogin(rq.getString("username"),rq.getString("password"));
@@ -49,6 +51,10 @@ public class ChildThreadServer implements Runnable {
                         sendDataToClient(new JSONObject().put("type", "LOGIN").put("status", "SUCCESS").put("data", account.toString()).toString());
                         account = null;
                     }
+                    break;
+                case "SENDMAIL":
+                    listMessage.put(rq.getString("receiver"), rq);
+                    System.out.println(rq);
                     break;
             }
         }
