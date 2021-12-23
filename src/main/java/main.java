@@ -14,19 +14,16 @@ public class main {
         ExecutorService executorService = Executors.newCachedThreadPool();
         ServerSocket serverSocket;
 
-        {
-            try {
-                serverSocket = new ServerSocket(PORT);
-                System.out.println("Waiting for client ...");
-                while (true) {
-                    Socket socket = serverSocket.accept();
-                    System.out.println(socket.toString()+" connected!");
-                    executorService.execute(new ChildThreadServer(socket));//Nếu có client kết nối thì tạo 1 luồng chạy sv
-                }
-
-            } catch (IOException e) {
-                e.printStackTrace();
+        try {
+            serverSocket = new ServerSocket(PORT);
+            System.out.println("Waiting for client ...");
+            while (true) {
+                Socket socket = serverSocket.accept();
+                System.out.println(socket.toString()+" connected!");
+                executorService.execute(new ChildThreadServer(socket));//Nếu có client kết nối thì tạo 1 luồng chạy sv
             }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }

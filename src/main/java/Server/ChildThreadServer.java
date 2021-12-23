@@ -1,6 +1,7 @@
 package Server;
 
 import Controller.UserController;
+import DAL.AuthDAL;
 import DTO.Account;
 import org.json.JSONObject;
 
@@ -55,6 +56,15 @@ public class ChildThreadServer implements Runnable {
                 case "SENDMAIL":
                     listMessage.put(rq.getString("receiver"), rq);
                     System.out.println(rq);
+                    break;
+                case "REGISTER":
+                    AuthDAL auth = new AuthDAL();
+                    if (auth.checkExist(rq.getString("username")) == null) {
+                        auth.Register(rq.getString("username"), rq.getString("password"));
+                        sendDataToClient(new JSONObject().put("type", "REGISTER").put("status", "SUCCESS").toString());
+                    } else {
+                        sendDataToClient(new JSONObject().put("type", "REGISTER").put("status", "ERROR").toString());
+                    }
                     break;
             }
         }
