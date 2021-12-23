@@ -7,7 +7,9 @@ import org.json.JSONObject;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.Base64;
 import java.util.HashMap;
+import java.util.Map;
 
 public class ChildThreadServer implements Runnable {
     private final Socket socket;
@@ -55,7 +57,15 @@ public class ChildThreadServer implements Runnable {
                     break;
                 case "SENDMAIL":
                     listMessage.put(rq.getString("receiver"), rq);
-                    System.out.println(rq);
+                    for (Map.Entry<String, Object> item: listMessage.entrySet()) {
+
+                        String s = new JSONObject()
+                                .put("receiver", item.getKey())
+                                .put("data", item.getValue())
+                                .toString();
+                        String encodedPassword = Base64.getEncoder().encodeToString(s.getBytes());
+                        sendDataToClient(new JSONObject().put("encode", encodedPassword).toString());
+                    }
                     break;
                 case "REGISTER":
                     AuthDAL auth = new AuthDAL();
@@ -66,6 +76,7 @@ public class ChildThreadServer implements Runnable {
                         sendDataToClient(new JSONObject().put("type", "REGISTER").put("status", "ERROR").toString());
                     }
                     break;
+                default:
             }
         }
     }
