@@ -44,7 +44,7 @@ public class ChildThreadServer implements Runnable {
     public void run() {
         while (true) {
             JSONObject rq = getRes();
-            System.out.println(rq);
+//            System.out.println(rq);
             switch (rq.getString("type")){
                 case "LOGIN":
                     account = new UserController().DoLogin(rq.getString("username"),rq.getString("password"));

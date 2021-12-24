@@ -22,7 +22,7 @@ public class AuthDAL {
             ps.setString(1, username);
             ps.setString(2, encodedPassword);
             rs = ps.executeQuery();
-            System.out.println("rs " + rs.getString(2) + rs.getString(3));
+//            System.out.println("rs " + rs.getString(2) + rs.getString(3));
 
             while (rs.next()) {
                 Account account = new Account(rs.getString(2), rs.getString(3));
